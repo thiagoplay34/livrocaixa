@@ -4,87 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Livro Caixa da Igreja</title>
-  <!-- PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-function listarUsuarios() {
-  const lista = el('listaUsuarios');
-  lista.innerHTML = '';
-  db.ref('usuarios').once('value', snapshot => {
-    const users = snapshot.val();
-    if (!users) {
-      lista.innerHTML = '<li>Nenhum usuário encontrado</li>';
-      return;
-    }
-    Object.keys(users).forEach(uid => {
-      const email = users[uid].email || '(sem e-mail)';
-      lista.innerHTML += `<li>${email} (UID: ${uid})</li>`;
-    });
-  });
-}
-
-</script>
-  <!-- Firebase 9 compat -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-function listarUsuarios() {
-  const lista = el('listaUsuarios');
-  lista.innerHTML = '';
-  db.ref('usuarios').once('value', snapshot => {
-    const users = snapshot.val();
-    if (!users) {
-      lista.innerHTML = '<li>Nenhum usuário encontrado</li>';
-      return;
-    }
-    Object.keys(users).forEach(uid => {
-      const email = users[uid].email || '(sem e-mail)';
-      lista.innerHTML += `<li>${email} (UID: ${uid})</li>`;
-    });
-  });
-}
-
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-function listarUsuarios() {
-  const lista = el('listaUsuarios');
-  lista.innerHTML = '';
-  db.ref('usuarios').once('value', snapshot => {
-    const users = snapshot.val();
-    if (!users) {
-      lista.innerHTML = '<li>Nenhum usuário encontrado</li>';
-      return;
-    }
-    Object.keys(users).forEach(uid => {
-      const email = users[uid].email || '(sem e-mail)';
-      lista.innerHTML += `<li>${email} (UID: ${uid})</li>`;
-    });
-  });
-}
-
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
-function listarUsuarios() {
-  const lista = el('listaUsuarios');
-  lista.innerHTML = '';
-  db.ref('usuarios').once('value', snapshot => {
-    const users = snapshot.val();
-    if (!users) {
-      lista.innerHTML = '<li>Nenhum usuário encontrado</li>';
-      return;
-    }
-    Object.keys(users).forEach(uid => {
-      const email = users[uid].email || '(sem e-mail)';
-      lista.innerHTML += `<li>${email} (UID: ${uid})</li>`;
-    });
-  });
-}
-
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     *{box-sizing:border-box}
     body{font-family:'Segoe UI',sans-serif;background:linear-gradient(90deg,#6a11cb,#2575fc);margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px}
     .container{background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);width:100%;max-width:900px;padding:25px;overflow-y:auto;max-height:95vh}
     h2,h3{text-align:center;color:#333;margin:5px 0}
     label{font-weight:600;color:#444;margin-top:12px;display:block}
-    input,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-top:6px}
+    input,textarea,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-top:6px}
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .row>div{flex:1 1 250px}
     button{margin-top:15px;padding:12px 20px;background:#2575fc;color:#fff;border:none;border-radius:6px;font-size:15px;cursor:pointer;transition:.3s}
@@ -103,7 +33,7 @@ function listarUsuarios() {
   <div class="login" id="login">
     <div class="login-box">
       <h2>Login do Livro Caixa</h2>
-      <label for="email">E  ‑mail:</label>
+      <label for="email">E-mail:</label>
       <input type="email" id="email" placeholder="email@exemplo.com">
       <label for="senha">Senha:</label>
       <input type="password" id="senha" placeholder="********">
@@ -137,6 +67,26 @@ function listarUsuarios() {
         <div><label>Quem Dirigiu:</label><input type="text" id="dirigente"></div>
         <div><label>Quem Pregou:</label><input type="text" id="pregador"></div>
       </div>
+
+      <h3>Informações de Saída de Valores</h3>
+      <div class="row">
+        <div>
+          <label>Houve Saída de Valor?</label>
+          <select id="houveSaida">
+            <option value="não">Não</option>
+            <option value="sim">Sim</option>
+          </select>
+        </div>
+        <div>
+          <label>Descrição da Saída:</label>
+          <textarea id="descricaoSaida" rows="2" placeholder="Ex: Compra de cadeiras, manutenção..."></textarea>
+        </div>
+        <div>
+          <label>Valor da Saída:</label>
+          <input type="number" id="valorSaida" placeholder="0.00">
+        </div>
+      </div>
+
       <div class="assinatura">
         <input type="text" placeholder="Assinatura do Responsável">
         <span>Assinatura</span>
@@ -157,8 +107,8 @@ function listarUsuarios() {
     <input type="password" id="novaSenha" placeholder="********">
     <button onclick="criarUsuario()">Criar Usuário</button>
     <p style="margin-top:20px;color:#a00;font-weight:bold">* Listagem, edição e exclusão de usuários requerem backend com Firebase Admin SDK.</p>
-<h3>Usuários Cadastrados</h3>
-<ul id="listaUsuarios"></ul>
+    <h3>Usuários Cadastrados</h3>
+    <ul id="listaUsuarios"></ul>
     <button onclick="voltarDash()">Voltar</button>
   </div>
 
@@ -190,9 +140,7 @@ function listarUsuarios() {
         .then((userCred) => {
           hide('login');
           show('dashboard');
-          if (email === 'admin@igreja.com') {
-            el('btnAdmin').style.display = 'inline-block';
-          }
+          if (email === 'admin@igreja.com') el('btnAdmin').style.display = 'inline-block';
         })
         .catch(err => alert('Erro: ' + err.message));
     }
@@ -215,7 +163,10 @@ function listarUsuarios() {
         dataHora: el('dataHora').value,
         horaFim: el('horaFim').value,
         dirigente: el('dirigente').value,
-        pregador: el('pregador').value
+        pregador: el('pregador').value,
+        houveSaida: el('houveSaida').value,
+        descricaoSaida: el('descricaoSaida').value,
+        valorSaida: el('valorSaida').value
       };
       db.ref('livros/' + user.uid + '/' + Date.now()).set(dados)
         .then(() => alert('Salvo com sucesso'))
@@ -226,7 +177,7 @@ function listarUsuarios() {
 
     function baixarPDF() {
       const clone = el('conteudoPDF').cloneNode(true);
-      clone.querySelectorAll('input,textarea').forEach(inp => {
+      clone.querySelectorAll('input,textarea,select').forEach(inp => {
         const div = document.createElement('div');
         const label = inp.previousElementSibling?.innerText || '';
         div.innerHTML = '<strong>' + label + '</strong><br>' + inp.value;
@@ -245,6 +196,7 @@ function listarUsuarios() {
       hide('dashboard');
       show('adminPanel');
     }
+
     function voltarDash() {
       hide('adminPanel');
       show('dashboard');
@@ -265,23 +217,22 @@ function listarUsuarios() {
         })
         .catch(err => alert('Erro: ' + err.message));
     }
-  
-function listarUsuarios() {
-  const lista = el('listaUsuarios');
-  lista.innerHTML = '';
-  db.ref('usuarios').once('value', snapshot => {
-    const users = snapshot.val();
-    if (!users) {
-      lista.innerHTML = '<li>Nenhum usuário encontrado</li>';
-      return;
-    }
-    Object.keys(users).forEach(uid => {
-      const email = users[uid].email || '(sem e-mail)';
-      lista.innerHTML += `<li>${email} (UID: ${uid})</li>`;
-    });
-  });
-}
 
-</script>
+    function listarUsuarios() {
+      const lista = el('listaUsuarios');
+      lista.innerHTML = '';
+      db.ref('usuarios').once('value', snapshot => {
+        const users = snapshot.val();
+        if (!users) {
+          lista.innerHTML = '<li>Nenhum usuário encontrado</li>';
+          return;
+        }
+        Object.keys(users).forEach(uid => {
+          const email = users[uid].email || '(sem e-mail)';
+          lista.innerHTML += `<li>${email} (UID: ${uid})</li>`;
+        });
+      });
+    }
+  </script>
 </body>
 </html>
